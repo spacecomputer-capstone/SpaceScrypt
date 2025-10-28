@@ -6,14 +6,18 @@ import { bytesToHex, hexToBytes, buildMessage, randomNonce16 } from "./crypto.js
 import { loadBeaconRegistry, getPublicKeyHex } from "./registry.js";
 import swagger from "@fastify/swagger";
 import swaggerUI from "@fastify/swagger-ui";
-import Ajv from "ajv";
-import addFormats from "ajv-formats";
+import * as AjvNS from "ajv";
+import * as AjvFormatsNS from "ajv-formats";
 
 const app = Fastify();
 await app.register(cors, { origin: ['https://spacecomputer-capstone.github.io'],
                            credentials: true
                           });
 
+                          
+const Ajv: typeof import("ajv").default = (AjvNS as any).default ?? (AjvNS as any);
+const addFormats: (ajv: import("ajv").default) => void =
+    (AjvFormatsNS as any).default ?? (AjvFormatsNS as any);
 const ajv = new Ajv({ strict: false, allErrors: true });
 addFormats(ajv);
 ajv.addKeyword('example');
