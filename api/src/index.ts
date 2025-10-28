@@ -23,7 +23,7 @@ loadBeaconRegistry();
 await app.register(swagger, {
   openapi: {
     info: { title: "Spacecomputer API (MVP)", version: "0.0.1" },
-    servers: [{ url: "http://localhost:8787" }]
+    servers: [{ url: "https://spacescrypt-api.onrender.com" }]
   }
 });
 await app.register(swaggerUI, { routePrefix: "/docs", staticCSP: true });
