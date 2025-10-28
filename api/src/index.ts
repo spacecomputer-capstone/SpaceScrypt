@@ -10,7 +10,9 @@ import Ajv from "ajv";
 import addFormats from "ajv-formats";
 
 const app = Fastify();
-await app.register(cors, { origin: true });
+await app.register(cors, { origin: ['https://spacecomputer-capstone.github.io'],
+                           credentials: true
+                          });
 
 const ajv = new Ajv({ strict: false, allErrors: true });
 addFormats(ajv);
