@@ -236,19 +236,10 @@ export default function App() {
   
       const payload = {
         beaconIdHex,
-        nonceHex: nonceRef.current, // <-- use ref, not state
+        nonceHex: nonceRef.current,
         tsMs: String(ms),
         sigHex: sig,
       };
-  
-      // Debug: see exactly what’s sent (and copy the curl)
-      console.groupCollapsed("[frontend] POST /api/verify");
-      console.log("payload:", payload);
-      console.log(
-        "curl:",
-        `curl -s -X POST ${API}/api/verify -H 'Content-Type: application/json' -d '${JSON.stringify(payload)}'`
-      );
-      console.groupEnd();
   
       const res = await fetch(`${API}/api/verify`, {
         method: "POST",
