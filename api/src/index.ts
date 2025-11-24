@@ -32,7 +32,7 @@ await app.register(swaggerUI, { routePrefix: "/docs", staticCSP: true });
 app.get("/api/nonce", {
   schema: {
     tags: ["nonce"],
-    description: "Returns a 16-byte random nonce as lowercase hex (32 chars).",
+    description: "Returns a 16-byte random nonce from the cTRNG API as a lowercase hex value (32 chars).",
     response: {
       200: {
         type: "object",
@@ -49,7 +49,7 @@ app.get("/api/nonce", {
     }
   }
 }, async (_req, res) => {
-  const nonce = randomNonce16();
+  const nonce = await randomNonce16();  // Added await here
   return res.send({ nonceHex: bytesToHex(nonce) });
 });
 

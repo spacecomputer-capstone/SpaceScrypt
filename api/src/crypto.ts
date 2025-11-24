@@ -1,5 +1,6 @@
 // api/src/crypto.ts
 import { webcrypto } from "node:crypto";
+import { OrbitportSDK } from "@spacecomputer-io/orbitport-sdk-ts";
 
 export function hexToBytes(h: string): Uint8Array {
   const hex = h.toLowerCase();
@@ -36,9 +37,27 @@ export function buildMessage(nonceHex: string, tsMs: string): Uint8Array {
   return msg;
 }
 
-// 16-byte CSPRNG nonce
-export function randomNonce16(): Uint8Array {
-  const arr = new Uint8Array(16);
-  webcrypto.getRandomValues(arr);
-  return arr;
+// 16-byte cTRNG nonce using SpaceComputer's API
+export async function randomNonce16(): Promise<Uint8Array> {
+  try {
+    const sdk = new OrbitportSDK({
+      config: {
+        clientId: process.env.OP_CLIENT_ID,
+        clientSecret: process.env.OP_CLIENT_SECRET,
+      },
+    });
+    
+    const result = await sdk.ctrng.random();
+    const randomHex = result.data.data;
+    
+    // Convert the hex string to Uint8Array and take first 16 bytes
+    const fullBytes = hexToBytes(randomHex);
+    return fullBytes.slice(0, 16);
+  } catch (error) {
+    console.error("Failed to get cTRNG, falling back to CSPRNG:", error);
+    // Fallback to local CSPRNG if API fails
+    const arr = new Uint8Array(16);
+    webcrypto.getRandomValues(arr);
+    return arr;
+  }
 }
